@@ -1,0 +1,1226 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#7c3aed">
+  <title>ZENVORA — Mukammal Onlayn Do'kon</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    :root {
+      --bg-card: #ffffff;
+      --text-color: #1f2937;
+      --text-muted: #64748b;
+      --bg-body: #f8fafc;
+      --border-color: #e2e8f0;
+      --primary: #7c3aed;
+    }
+    
+    /* TUNGI REJIM (DARK MODE) MUKAMMAL FIX */
+    body.dark-mode {
+      --bg-card: #1e1b4b !important;
+      --text-color: #f8fafc !important;
+      --text-muted: #cbd5e1 !important;
+      --bg-body: #0f172a !important;
+      --border-color: #312e81 !important;
+      background-color: #0f172a !important;
+      color: #f8fafc !important;
+    }
+    body.dark-mode .hero, 
+    body.dark-mode .benefits, 
+    body.dark-mode .benefit,
+    body.dark-mode .jc-card,
+    body.dark-mode .product-card,
+    body.dark-mode .newsletter,
+    body.dark-mode .drawer,
+    body.dark-mode .modal,
+    body.dark-mode .jc-modal-content,
+    body.dark-mode header,
+    body.dark-mode nav {
+      background-color: #1e1b4b !important;
+      color: #f8fafc !important;
+      border-color: #312e81 !important;
+    }
+    /* Tun rejimda matnlar fon bilan bir xil rangga tushib qolmasin. Tugma ranglari saqlanadi. */
+    body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4,
+    body.dark-mode .hero-copy, body.dark-mode .product-card, body.dark-mode .drawer,
+    body.dark-mode .modal, body.dark-mode .jc-modal-content,
+    body.dark-mode .jc-card, body.dark-mode .admin-stat-card,
+    body.dark-mode .admin-table td, body.dark-mode .admin-table th {
+      color: #f8fafc;
+    }
+    body.dark-mode p, body.dark-mode small, body.dark-mode label,
+    body.dark-mode .product-desc, body.dark-mode .text-muted {
+      color: #cbd5e1;
+    }
+    body.dark-mode button span, body.dark-mode button b { color: inherit; }
+    body.dark-mode .primary-btn, body.dark-mode .admin-btn,
+    body.dark-mode .cart-action, body.dark-mode .icon-action { color: #fff !important; }
+    body.dark-mode input, body.dark-mode select, body.dark-mode textarea {
+      background-color: #0f172a !important;
+      color: #ffffff !important;
+      border-color: #312e81 !important;
+    }
+
+    /* Drawer va modal uchun mustaqil uslublar: tashqi CSS bo‘lmasa ham savat ochiladi. */
+    .overlay { display:none; position:fixed; inset:0; background:rgba(15,23,42,.55); z-index:9000; }
+    .overlay.active { display:block; }
+    .drawer { position:fixed; top:0; right:0; width:min(440px,94vw); height:100vh; background:var(--bg-card); color:var(--text-color); z-index:9001; transform:translateX(110%); transition:transform .25s ease; display:flex; flex-direction:column; box-shadow:-12px 0 40px rgba(0,0,0,.18); padding:20px; }
+    .drawer.active { transform:translateX(0); }
+    .drawer-head { display:flex; justify-content:space-between; align-items:center; gap:12px; padding-bottom:14px; border-bottom:1px solid var(--border-color); }
+    .drawer-body { flex:1; overflow-y:auto; padding:18px 0; }
+    .drawer-foot { border-top:1px solid var(--border-color); padding-top:16px; }
+    .total-line { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; font-size:18px; }
+    .modal { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:min(560px,94vw); max-height:92vh; overflow:auto; padding:22px; border-radius:20px; background:var(--bg-card); color:var(--text-color); z-index:9002; box-shadow:0 24px 70px rgba(0,0,0,.28); }
+    .modal.active { display:block; }
+    .modal-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:14px; }
+    .close-btn { border:0; background:transparent; font-size:28px; cursor:pointer; color:inherit; }
+    .modal form label { display:block; margin:12px 0; }
+    .modal input, .modal textarea { display:block; box-sizing:border-box; width:100%; margin-top:6px; padding:11px; border:1px solid var(--border-color); border-radius:10px; }
+    .checkout-summary { display:flex; justify-content:space-between; padding:14px 0; }
+    .jc-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; }
+    .jc-modal-content { background: var(--bg-card); padding: 28px; border-radius: 24px; width: 480px; max-height: 90vh; overflow-y: auto; color: var(--text-color); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid var(--border-color); font-family: 'Manrope', sans-serif; }
+    .jc-profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+    .jc-menu-btn { background: rgba(124, 58, 237, 0.05); border: 1px solid var(--border-color); padding: 14px; border-radius: 16px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; transition: all 0.2s ease; color: var(--text-color); text-align: center; }
+    .jc-menu-btn:hover { background: var(--primary); color: #ffffff; border-color: var(--primary); transform: translateY(-2px); }
+    .jc-menu-btn span:first-child { font-size: 22px; }
+    .back-sub-btn { background: none; border: none; color: var(--primary); font-weight: 700; cursor: pointer; margin-bottom: 12px; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; padding: 0; }
+    .jc-card { background: rgba(124, 58, 237, 0.03); border: 1px solid var(--border-color); border-radius: 14px; padding: 14px; margin-bottom: 10px; color: var(--text-color); }
+    .jc-input { width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-color); margin-top: 6px; margin-bottom: 12px; font-family: 'Manrope', sans-serif; box-sizing: border-box; }
+
+    /* Admin Panel Styling */
+    .admin-full-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 10000; align-items: center; justify-content: center; }
+    .admin-container { background: var(--bg-card); width: 95vw; height: 92vh; border-radius: 24px; display: flex; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.3); border: 1px solid var(--border-color); color: var(--text-color); font-family: 'Manrope', sans-serif; }
+    .admin-sidebar { width: 270px; background: #1e1b4b; color: #fff; padding: 20px; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; }
+    .admin-sidebar button { background: none; border: none; color: #94a3b8; text-align: left; padding: 10px 14px; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
+    .admin-sidebar button:hover, .admin-sidebar button.active { background: var(--primary); color: #fff; }
+    .admin-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg-body); }
+    .admin-header { padding: 16px 24px; background: var(--bg-card); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+    .admin-body { padding: 24px; overflow-y: auto; flex: 1; }
+    .admin-tab-pane { display: none; }
+    .admin-tab-pane.active { display: block; }
+    .admin-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+    .admin-stat-card { background: var(--bg-card); padding: 18px; border-radius: 16px; border: 1px solid var(--border-color); }
+    .admin-stat-card small { color: #64748b; font-weight: 600; }
+    .admin-stat-card h3 { font-size: 22px; font-weight: 800; color: var(--primary); margin-top: 6px; }
+    .admin-table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--bg-card); border-radius: 14px; overflow: hidden; border: 1px solid var(--border-color); margin-top: 10px; }
+    .admin-table th { background: rgba(124,58,237,0.05); padding: 12px 14px; text-align: left; font-weight: 700; border-bottom: 1px solid var(--border-color); }
+    .admin-table td { padding: 12px 14px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+    .admin-btn { background: var(--primary); color: #fff; border: none; padding: 8px 16px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 13px; }
+
+    /* Faqat profil bo‘limi uchun qo‘shimcha ko‘rinish */
+    #profileModal { padding: 16px; box-sizing: border-box; overflow-y: auto; }
+    #profileModal .jc-content-wrapper { width: min(100%, 540px); max-height: 92vh; overflow-y: auto; margin: auto; }
+    #profileModal .jc-modal-content { width: 100%; max-width: 100%; box-sizing: border-box; }
+    #profileModal .jc-profile-heading { display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border-color); padding-bottom:12px; }
+    #profileModal .jc-profile-heading h3 { margin:0; font-size:19px; font-weight:800; }
+    #profileModal .jc-profile-heading button { background:none; border:0; font-size:22px; cursor:pointer; color:var(--text-color); }
+    #profileModal .jc-profile-hero { text-align:center; margin:18px 0; }
+    #profileModal .jc-profile-hero img { width:84px; height:84px; border-radius:50%; object-fit:cover; border:3px solid #7c3aed; }
+    #profileModal .jc-profile-hero h4 { margin:10px 0 2px; font-size:18px; }
+    #profileModal .jc-profile-hero p { margin:0; opacity:.7; font-size:13px; }
+    #profileModal .jc-member-tag { display:inline-block; margin-top:9px; padding:5px 10px; border-radius:99px; background:rgba(124,58,237,.1); color:#7c3aed; font-size:11px; font-weight:800; }
+    #profileModal .jc-profile-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    #profileModal .jc-profile-grid .jc-menu-btn { min-height:82px; }
+    #profileModal .jc-profile-list { max-height:340px; overflow-y:auto; }
+    #profileModal .jc-input { display:block; }
+    #profileModal .jc-option { display:flex; gap:10px; align-items:center; padding:12px; margin:8px 0; border:1px solid var(--border-color); border-radius:12px; }
+    #profileModal .jc-help { font-size:12px; opacity:.7; }
+    @media(max-width:480px) { #profileModal { padding:8px; } #profileModal .jc-profile-grid { gap:8px; } #profileModal .jc-menu-btn { padding:10px 6px; font-size:12px; } }
+
+
+    /* Ro‘yxatdan o‘tish: alohida animatsion qatlam, mavjud do‘kon uslublarini almashtirmaydi */
+    .jc-auth-gate{position:fixed;inset:0;z-index:20000;display:none;align-items:center;justify-content:center;padding:18px;overflow:auto;background:radial-gradient(circle at 15% 15%,rgba(124,58,237,.30),transparent 35%),radial-gradient(circle at 90% 85%,rgba(14,165,233,.22),transparent 32%),rgba(15,23,42,.94);backdrop-filter:blur(14px)}
+    .jc-auth-gate.active{display:flex;animation:jcGateIn .35s ease both}
+    .jc-auth-card{position:relative;z-index:2;width:min(100%,470px);max-height:94vh;overflow:auto;padding:28px;border:1px solid rgba(255,255,255,.18);border-radius:26px;background:rgba(255,255,255,.97);color:#1f2937;box-shadow:0 30px 100px rgba(0,0,0,.38);animation:jcCardIn .5s cubic-bezier(.2,.8,.2,1) both}
+    .jc-auth-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;margin-bottom:22px}.jc-auth-brand .brand-mark{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:#7c3aed;color:#fff}
+    .jc-auth-kicker{font-size:11px;letter-spacing:2px;font-weight:800;color:#7c3aed}.jc-auth-card h2{margin:6px 0;font-size:27px;line-height:1.2;color:#17152e}.jc-auth-subtitle{margin:0 0 18px;color:#64748b;font-size:13px}
+    .jc-auth-tabs{display:grid;grid-template-columns:1fr 1fr;padding:4px;background:#f1f0f9;border-radius:13px;margin-bottom:16px;gap:4px}.jc-auth-tabs button{border:0;border-radius:10px;padding:10px 6px;background:transparent;color:#64748b;font-weight:800;cursor:pointer}.jc-auth-tabs button.active{background:#7c3aed;color:#fff;box-shadow:0 5px 14px #7c3aed33}
+    .jc-auth-card form label{display:block;font-size:12px;font-weight:800;margin:10px 0;color:#374151}.jc-auth-card input{display:block;width:100%;box-sizing:border-box;margin-top:5px;padding:12px 13px;border:1px solid #e2e8f0;border-radius:11px;background:#fff;color:#111827;font:inherit;outline:none}.jc-auth-card input:focus{border-color:#8b5cf6;box-shadow:0 0 0 3px #8b5cf622}
+    .jc-auth-submit{display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:16px;padding:13px 16px;border:0;border-radius:12px;background:linear-gradient(110deg,#7c3aed,#5b21b6);color:#fff;font-weight:800;cursor:pointer;box-shadow:0 9px 22px #7c3aed35;transition:transform .2s,box-shadow .2s}.jc-auth-submit:hover{transform:translateY(-2px);box-shadow:0 13px 25px #7c3aed45}.jc-auth-note{text-align:center;font-size:11px;color:#94a3b8;margin:14px 0 0}
+    .jc-auth-orb{position:absolute;border-radius:50%;filter:blur(1px);opacity:.45;animation:jcOrbFloat 7s ease-in-out infinite}.orb-a{width:180px;height:180px;background:#7c3aed;top:8%;left:8%}.orb-b{width:130px;height:130px;background:#0ea5e9;bottom:7%;right:9%;animation-delay:-3s}
+    .jc-avatar-upload{display:inline-flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;color:#7c3aed;font-size:11px;font-weight:800}.jc-avatar-upload img{display:block;cursor:pointer}.jc-avatar-upload:hover img{filter:brightness(.92)}
+    @keyframes jcGateIn{from{opacity:0}to{opacity:1}}@keyframes jcCardIn{from{opacity:0;transform:translateY(22px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes jcOrbFloat{0%,100%{transform:translateY(0) translateX(0)}50%{transform:translateY(-22px) translateX(12px)}}
+    @media(max-width:480px){.jc-auth-card{padding:21px 17px;border-radius:21px}.jc-auth-card h2{font-size:23px}.jc-auth-gate{padding:10px}}
+
+
+    /* Mobil moslashuv: telefon, Android va Samsung ekranlari uchun; asosiy dizayn saqlanadi. */
+    html { -webkit-text-size-adjust: 100%; }
+    body { min-width: 320px; }
+    img { max-width: 100%; }
+    button, input, select, textarea { touch-action: manipulation; }
+    .admin-full-modal { overflow: auto; -webkit-overflow-scrolling: touch; }
+    .admin-container { max-width: 100vw; max-height: 100dvh; }
+    .admin-main { min-width: 0; }
+    .admin-body { min-width: 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .admin-tab-pane .jc-card { min-width: 0; }
+    .admin-table { min-width: 760px; }
+    #admin-tab-ords .admin-table { min-width: 1050px; }
+    #admin-tab-ords .admin-table td { vertical-align: top; }
+    #admin-tab-ords .admin-table td:nth-child(4) { min-width: 245px; max-width: 330px; white-space: normal; }
+    #admin-tab-ords .admin-table td:nth-child(4) img { object-fit: contain; }
+    .header, .header-actions, .nav-inner { flex-wrap: wrap; }
+    .search { min-width: 0; }
+    .product-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 155px), 1fr)); }
+    .drawer { width: min(100vw, 430px); max-width: 100%; box-sizing: border-box; }
+    .modal { max-width: 100vw; box-sizing: border-box; }
+    @media (max-width: 760px) {
+      .header { gap: 10px; padding: 12px; }
+      .header .brand { flex-shrink: 0; }
+      .search { order: 3; flex: 1 1 100%; width: 100%; }
+      .header-actions { width: 100%; justify-content: space-between; gap: 6px; }
+      .header-actions button { min-height: 42px; }
+      .admin-container { display: flex; flex-direction: column; width: 100%; height: 100dvh; max-height: 100dvh; overflow: auto; }
+      .admin-sidebar { width: 100%; max-width: 100%; box-sizing: border-box; display: flex; flex-direction: row; gap: 7px; overflow-x: auto; padding: 10px; flex: 0 0 auto; -webkit-overflow-scrolling: touch; }
+      .admin-sidebar > div { display: none; }
+      .admin-sidebar button { flex: 0 0 auto; white-space: nowrap; min-height: 42px; }
+      .admin-main { min-height: 0; flex: 1 1 auto; }
+      .admin-header { padding: 12px; position: sticky; top: 0; z-index: 3; }
+      .admin-body { padding: 12px; }
+      .admin-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+      .admin-stat-card { padding: 12px; min-width: 0; }
+      .admin-stat-card h3 { font-size: 18px; overflow-wrap: anywhere; }
+      .jc-card { overflow-x: auto; }
+      .product-grid { gap: 10px; }
+    }
+    @media (max-width: 380px) {
+      .header-actions button { padding: 8px !important; font-size: 12px; }
+      .admin-stats { grid-template-columns: 1fr 1fr; }
+      .admin-stat-card h3 { font-size: 16px; }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="announcement"><span>✦</span> ZENVORA — texnologiya sizga yaqin <span class="announcement-right">Tezkor va qulay xarid</span></div>
+  <header class="header">
+    <a class="brand" href="#" aria-label="Bosh sahifa"><span class="brand-mark">Z</span><span>ZENVORA</span></a>
+    <form class="search" id="search-form" onsubmit="event.preventDefault();"><span>⌕</span><input id="search-input" placeholder="Masalan: telefon, noutbuk, quloqchin..." autocomplete="off"><button aria-label="Qidirish">Qidirish</button></form>
+    <div class="header-actions">
+      <!-- PROFIL TUGMASI -->
+      <button onclick="openProfileModal()" style="padding: 10px 18px; background: #7c3aed; color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(124,58,237,0.35);">
+        👤 Profil
+      </button>
+      <!-- ADMIN TUGMASI -->
+      <button onclick="openAdminAuthModal()" style="background:#1f2937; color:#fff; border:none; padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:700; display:flex; align-items:center; gap:6px; z-index:999; position:relative;">⚙️ Admin</button>
+      <button class="icon-action" id="favorites-btn"><span class="action-icon">♡</span><span>Sevimlilar</span></button>
+      <button class="cart-action" id="cart-btn" onclick="openCartDrawer()"><span>🛒</span><span>Savat</span><b id="cart-count">0</b></button>
+    </div>
+  </header>
+  <nav class="nav"><div class="nav-inner">
+    <button class="nav-category active" onclick="filterCat('all', this)">☷ Barcha mahsulotlar</button>
+    <button class="nav-category" onclick="filterCat('Telefonlar', this)">Telefonlar</button>
+    <button class="nav-category" onclick="filterCat('Noutbuklar', this)">Noutbuklar</button>
+    <button class="nav-category" onclick="filterCat('Aksessuarlar', this)">Aksessuarlar</button>
+    <button class="nav-category" onclick="filterCat('TV va uy', this)">TV va uy</button>
+    <span class="nav-note">Har kuni yaxshi tanlov</span>
+  </div></nav>
+  <main class="container">
+    <section class="hero">
+      <div class="hero-copy"><div class="eyebrow"><span class="pulse"></span> YANGI MAVSUM • 2026</div>
+        <h1>Kelajak texnologiyasi.<br><em>Bugun siz bilan.</em></h1>
+        <p>Sevimli qurilmalaringizni toping, taqqoslang va qulay xarid qiling.</p>
+        <div class="hero-buttons"><button class="primary-btn" id="shop-now">Xaridni boshlash <span>↗</span></button><span class="hero-caption">Tanlangan texnika — bir joyda</span></div>
+        <div class="hero-stats"><div><strong>100%</strong><small>Qulay xarid</small></div><i></i><div><strong>24/7</strong><small>Onlayn katalog</small></div><i></i><div><strong>Yangi</strong><small>Mahsulotlar</small></div></div>
+      </div>
+      <div class="hero-art"><div class="art-glow"></div><div class="art-ring ring-one"></div><div class="art-ring ring-two"></div><div class="floating-chip chip-top">✦ Premium tanlov</div>
+        <img src="https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?auto=format&fit=crop&w=1000&q=85" alt="Zamonaviy smartfon" class="hero-phone">
+        <div class="floating-chip chip-bottom"><span class="chip-dot"></span> Yangi qurilmalar</div>
+      </div>
+    </section>
+    <section class="benefits">
+      <div class="benefit"><span class="benefit-icon purple">↗</span><div><b>Qulay tanlov</b><small>Kerakli mahsulotni tez toping</small></div></div>
+      <div class="benefit"><span class="benefit-icon mint">◇</span><div><b>Oson buyurtma</b><small>Savat orqali buyurtma qoldiring</small></div></div>
+      <div class="benefit"><span class="benefit-icon peach">♡</span><div><b>Sevimlilar</b><small>Yoqtirganlaringizni saqlang</small></div></div>
+    </section>
+    <section class="section-head" id="catalog"><div><div class="eyebrow">KATALOG</div><h2>O‘zingizga mosini toping</h2><p>Tanlangan qurilmalar va foydali aksessuarlar</p></div><div class="sort-wrap"><label for="sort-select">Saralash</label><select id="sort-select"><option value="featured">Tavsiya etilgan</option><option value="price-low">Arzonidan</option><option value="price-high">Qimmatidan</option><option value="name">Nomi bo‘yicha</option></select></div></section>
+    <div class="filter-row"><div id="category-pills" class="category-pills"><button class="pill active" onclick="filterCat('all', this)">Barchasi</button><button class="pill" onclick="filterCat('Telefonlar', this)">Telefonlar</button><button class="pill" onclick="filterCat('Noutbuklar', this)">Noutbuklar</button><button class="pill" onclick="filterCat('Aksessuarlar', this)">Aksessuarlar</button><button class="pill" onclick="filterCat('TV va uy', this)">TV va uy</button></div><span id="result-count" class="result-count">Mahsulotlar yuklanmoqda...</span></div>
+    
+    <!-- MAHSULOTLAR GRID -->
+    <div id="product-grid" class="product-grid"></div>
+
+    <section class="newsletter"><div class="newsletter-icon">✳</div><div><h3>Yaxshi tanlovlar shu yerdan boshlanadi</h3><p>Katalogni ko‘rib chiqing va o‘zingizga mos mahsulotni tanlang.</p></div><button class="secondary-btn" id="newsletter-btn">Katalogni ko‘rish ↗</button></section>
+  </main>
+  <footer><a class="brand footer-brand" href="#"><span class="brand-mark">Z</span><span>ZENVORA</span></a><p>© 2026 ZENVORA. Barcha huquqlar himoyalangan.</p><span class="footer-status"><i></i> Onlayn katalog</span></footer>
+  <div class="overlay" id="overlay" onclick="closeAllDrawers()"></div>
+
+  <!-- SAVAT DRAWER -->
+  <aside class="drawer" id="cart-drawer" aria-label="Savat">
+    <div class="drawer-head"><div><span class="eyebrow">SIZNING TANLOVINGIZ</span><h2>Savat <span id="drawer-count">(0)</span></h2></div><button class="close-btn" onclick="closeAllDrawers()">×</button></div>
+    <div id="cart-items" class="drawer-body"></div>
+    <div class="drawer-foot"><div class="total-line"><span>Jami</span><strong id="cart-total">0 so‘m</strong></div><button class="primary-btn full" onclick="openCheckoutModal()">Buyurtma berish <span>→</span></button><small>To‘lov hozircha buyurtma tasdiqlangandan keyin kelishiladi.</small></div>
+  </aside>
+
+  <!-- BUYURTMA BERISH MODALI -->
+  <section class="modal checkout-modal" id="checkout-modal">
+    <div class="modal-head"><div><span class="eyebrow">YAKUNIY QADAM</span><h2>Buyurtma berish</h2></div><button class="close-btn" onclick="closeAllDrawers()">×</button></div>
+    <form id="checkout-form" onsubmit="handleCheckoutSubmit(event)">
+      <label>Ism va familiya<input name="customer_name" id="co_name" required placeholder="Jahongir"></label>
+      <label>Telefon raqam<input name="phone" id="co_phone" required placeholder="+998 95 767 09 24"></label>
+      <label>Yetkazish manzili<textarea name="address" id="co_address" required placeholder="Xorazm Region, Urganch"></textarea></label>
+      <label>Izoh (ixtiyoriy)<textarea name="note" placeholder="Buyurtma bo‘yicha qo‘shimcha ma’lumot"></textarea></label>
+      <div class="checkout-summary"><span>Buyurtma summasi</span><strong id="checkout-total">0 so‘m</strong></div>
+      <button type="submit" class="primary-btn full">Buyurtmani tasdiqlash <span>→</span></button>
+    </form>
+  </section>
+
+  <!-- MAHSULOT BATAFSIL MA'LUMOTI -->
+  <section class="modal" id="product-detail-modal" style="z-index:10020;max-width:760px;width:94vw;max-height:92vh;overflow:auto;padding:22px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px"><h2 id="detail-title" style="margin:0">Mahsulot</h2><button class="close-btn" onclick="closeProductDetail()" aria-label="Yopish">×</button></div>
+    <div id="detail-gallery" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px"></div>
+    <div id="detail-info"></div>
+  </section>
+
+  <!-- ADMIN KIRISH MODALI -->
+  <div id="admin-auth-modal" class="jc-modal">
+    <div class="jc-modal-content" style="width:380px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:10px; margin-bottom:15px;">
+        <h3 style="margin:0; font-size:18px;">⚙️ Admin Panelga Kirish</h3>
+        <button onclick="document.getElementById('admin-auth-modal').style.display='none'" style="background:none; border:none; font-size:20px; cursor:pointer;">✕</button>
+      </div>
+      <form onsubmit="handleAdminAuth(event)">
+        <label style="font-size:13px; font-weight:700;">Admin Email:</label>
+        <input type="email" id="admin_email_in" class="jc-input" value="jahongir1234567@gmail.com" required>
+        <label style="font-size:13px; font-weight:700;">Admin Parol:</label>
+        <input type="password" id="admin_pass_in" class="jc-input" value="jahongir1234567" required>
+        <button type="submit" class="admin-btn" style="width:100%; padding:12px; margin-top:6px;">Kirish</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MAHSULOT QO'SHISH MODALI -->
+  <div id="add-product-modal" class="jc-modal">
+    <div class="jc-modal-content" style="width:450px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:10px; margin-bottom:15px;">
+        <h3 style="margin:0; font-size:18px;">📦 Yangi Mahsulot Qo'shish</h3>
+        <button onclick="document.getElementById('add-product-modal').style.display='none'" style="background:none; border:none; font-size:20px; cursor:pointer;">✕</button>
+      </div>
+      <form onsubmit="saveNewProduct(event)">
+        <label style="font-size:13px; font-weight:700;">Mahsulot Nomi:</label>
+        <input type="text" id="np_name" class="jc-input" placeholder="iPhone 15 Pro" required>
+        <label style="font-size:13px; font-weight:700;">Kategoriya:</label>
+        <select id="np_cat" class="jc-input">
+          <option value="Telefonlar">Telefonlar</option>
+          <option value="Noutbuklar">Noutbuklar</option>
+          <option value="Aksessuarlar">Aksessuarlar</option>
+          <option value="TV va uy">TV va uy</option>
+        </select>
+        <label style="font-size:13px; font-weight:700;">Narxi (so'mda):</label>
+        <input type="number" id="np_price" class="jc-input" placeholder="14500000" required>
+        <label style="font-size:13px; font-weight:700;">Ombordagi Soni:</label>
+        <input type="number" id="np_stock" class="jc-input" placeholder="10" required>
+        <label style="font-size:13px; font-weight:700;">Rasm URL manzili:</label>
+        <input type="url" id="np_img" class="jc-input" placeholder="Asosiy rasm URL manzili" required>
+        <label style="font-size:13px; font-weight:700;">Qo‘shimcha rasmlar (URL, ixtiyoriy):</label>
+        <input type="url" id="np_img2" class="jc-input" placeholder="2-rasm URL manzili">
+        <input type="url" id="np_img3" class="jc-input" placeholder="3-rasm URL manzili">
+        <input type="url" id="np_img4" class="jc-input" placeholder="4-rasm URL manzili">
+        <label style="font-size:13px; font-weight:700;">Tavsifi:</label>
+        <textarea id="np_desc" class="jc-input" placeholder="Mahsulot haqida ma'lumot..." rows="3"></textarea>
+        <button type="submit" class="admin-btn" style="width:100%; padding:12px; margin-top:6px;">Saqlash va Qo'shish</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADMIN PANEL -->
+  <div id="admin-full-modal" class="admin-full-modal">
+    <div class="admin-container">
+      <div class="admin-sidebar">
+        <div style="font-size:16px; font-weight:800; margin-bottom:10px; padding-left:6px;">⚙️ Admin Boshqaruv</div>
+        <button class="active" onclick="switchAdminTab('dash', this)">📊 1. Dashboard</button>
+        <button onclick="switchAdminTab('prods', this)">📦 2. Mahsulotlar</button>
+        <button onclick="switchAdminTab('ords', this)">🛒 3. Buyurtmalar</button>
+        <button onclick="switchAdminTab('custs', this)">👥 4. Mijozlar</button>
+        <button onclick="switchAdminTab('fin', this)">💳 5. Moliya va To'lov</button>
+        <button onclick="switchAdminTab('ship', this)">🚚 6. Yetkazib berish</button>
+        <button onclick="switchAdminTab('mkt', this)">🏷️ 7. Marketing</button>
+        <button onclick="switchAdminTab('inv', this)">🏭 8. Omborxona</button>
+        <button onclick="switchAdminTab('rep', this)">📈 9. Hisobotlar</button>
+        <button onclick="switchAdminTab('set', this)">⚙️ 10. Sozlamalar</button>
+      </div>
+      <div class="admin-main">
+        <div class="admin-header">
+          <h2 id="admin-page-title" style="font-size:17px; font-weight:800;">Dashboard (Asosiy sahifa)</h2>
+          <button onclick="closeAdminPanel()" style="background:none; border:none; font-size:22px; cursor:pointer; font-weight:bold;">✕</button>
+        </div>
+        <div class="admin-body">
+          
+          <!-- 1. DASHBOARD -->
+          <div id="admin-tab-dash" class="admin-tab-pane active">
+            <div class="admin-stats">
+              <div class="admin-stat-card"><small>Jami Savdo</small><h3 id="stat-total-sales">0 so'm</h3><button class="admin-btn" type="button" onclick="resetDisplayedProfit()" style="margin-top:10px;font-size:11px;padding:7px 9px;">Foydani 0 ga tushirish</button></div>
+              <div class="admin-stat-card"><small>Buyurtmalar Soni</small><h3 id="stat-total-orders">0 ta</h3></div>
+              <div class="admin-stat-card"><small>Mijozlar Soni</small><h3 id="stat-total-customers">1 ta</h3></div>
+              <div class="admin-stat-card"><small>Ombordagi Mahsulotlar</small><h3 id="stat-total-items">0 ta</h3></div>
+            </div>
+            <div class="jc-card">
+              <h3>So'nggi Bildirishnomalar va Faollik</h3>
+              <p style="font-size:13px; opacity:0.7;" id="dashboard-notif">Tizim barqaror ishlamoqda. Barcha buyurtmalar saqlanmoqda.</p>
+            </div>
+          </div>
+
+          <!-- 2. MAHSULOTLAR -->
+          <div id="admin-tab-prods" class="admin-tab-pane">
+            <div class="jc-card">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h3>Mahsulotlar (Qo'shish / O'chirish)</h3>
+                <button class="admin-btn" onclick="document.getElementById('add-product-modal').style.display='flex'">+ Yangi mahsulot qo'shish</button>
+              </div>
+              <table class="admin-table">
+                <thead><tr><th>Rasm</th><th>Nomi</th><th>Kategoriya</th><th>Narxi</th><th>Qoldiq</th><th>Amal</th></tr></thead>
+                <tbody id="admin-products-list"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 3. BUYURTMALAR -->
+          <div id="admin-tab-ords" class="admin-tab-pane">
+            <div class="jc-card">
+              <h3>Barcha Buyurtmalar va Holatni O'zgartirish</h3>
+              <table class="admin-table">
+                <thead><tr><th>ID</th><th>Mijoz va Tel</th><th>Manzil</th><th>Mahsulotlar (nomi, rangi, rasmi, soni)</th><th>Summa</th><th>Holati</th><th>O'zgartirish</th></tr></thead>
+                <tbody id="admin-orders-list"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="admin-tab-custs" class="admin-tab-pane"><div class="jc-card"><h3>Mijozlar Bazasi</h3><p>Jahongir (+998 95 767 09 24)</p></div></div>
+          <div id="admin-tab-fin" class="admin-tab-pane"><div class="jc-card"><h3>Moliya</h3><p>Click va Payme integratsiyasi faol.</p></div></div>
+          <div id="admin-tab-ship" class="admin-tab-pane"><div class="jc-card"><h3>Yetkazib berish</h3><p>Xorazm bo'ylab kurerlik faol.</p></div></div>
+          <div id="admin-tab-mkt" class="admin-tab-pane"><div class="jc-card"><h3>Marketing</h3><p>Promo-kodlar boshqaruvi.</p></div></div>
+          <div id="admin-tab-inv" class="admin-tab-pane"><div class="jc-card"><h3>Omborxona</h3><table class="admin-table"><thead><tr><th>Mahsulot</th><th>Soni</th></tr></thead><tbody id="admin-inventory-list"></tbody></table></div></div>
+          <div id="admin-tab-rep" class="admin-tab-pane"><div class="jc-card"><h3>Hisobotlar</h3><button class="admin-btn" onclick="alert('Excel hisobot yuklandi')">Excel yuklash</button></div></div>
+          <div id="admin-tab-set" class="admin-tab-pane"><div class="jc-card"><h3>Sozlamalar</h3><p>ZENVORA v2.0</p></div></div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANIMATSIYALI RO‘YXATDAN O‘TISH / KIRISH OYNASI -->
+  <div id="jc-auth-gate" class="jc-auth-gate" aria-modal="true" role="dialog" aria-labelledby="jc-auth-title">
+    <div class="jc-auth-orb orb-a"></div><div class="jc-auth-orb orb-b"></div>
+    <div class="jc-auth-card">
+      <div class="jc-auth-brand"><span class="brand-mark">Z</span><span>ZENVORA</span></div>
+      <div class="jc-auth-kicker">XUSH KELIBSIZ</div>
+      <h2 id="jc-auth-title">Xaridni boshlaymizmi?</h2>
+      <p class="jc-auth-subtitle">Hisob yarating yoki tizimga kiring</p>
+      <div class="jc-auth-tabs"><button type="button" id="jc-tab-register" class="active" onclick="switchAuthMode('register')">Ro‘yxatdan o‘tish</button><button type="button" id="jc-tab-login" onclick="switchAuthMode('login')">Kirish</button></div>
+      <form id="jc-register-form" onsubmit="handleCustomerRegister(event)">
+        <label>Ism va familiya<input id="jc-reg-name" required autocomplete="name" placeholder="Ismingiz"></label>
+        <label>Email<input id="jc-reg-email" type="email" required autocomplete="email" placeholder="email@example.com"></label>
+        <label>Parol<input id="jc-reg-password" type="password" required minlength="6" autocomplete="new-password" placeholder="Kamida 6 ta belgi"></label>
+        <label>Telefon raqam<input id="jc-reg-phone" type="tel" required autocomplete="tel" placeholder="+998 ..."></label>
+        <label>Tug‘ilgan sana<input id="jc-reg-dob" type="date" required></label>
+        <button class="jc-auth-submit" type="submit">Hisob yaratish <span>→</span></button>
+      </form>
+      <form id="jc-login-form" onsubmit="handleCustomerLogin(event)" style="display:none">
+        <label>Email<input id="jc-login-email" type="email" required autocomplete="username" placeholder="Email manzilingiz"></label>
+        <label>Parol<input id="jc-login-password" type="password" required autocomplete="current-password" placeholder="Parolingiz"></label>
+        <button class="jc-auth-submit" type="submit">Kirish <span>→</span></button>
+      </form>
+      <p class="jc-auth-note">Ma’lumotlaringiz ushbu brauzerda saqlanadi.</p>
+    </div>
+  </div>
+
+  <!-- PROFIL MODALI -->
+  <div id="profileModal" class="jc-modal">
+    <div class="jc-content-wrapper">
+      <div id="main-profile-view" class="jc-modal-content sub-view">
+        <div class="jc-profile-heading">
+          <h3>Mijoz kabineti</h3>
+          <button onclick="closeProfileModal()" aria-label="Yopish">✕</button>
+        </div>
+        <div class="jc-profile-hero">
+          <label class="jc-avatar-upload" title="Profil rasmini tanlash">
+            <img id="userAvatar" src="https://via.placeholder.com/100" alt="Profil rasmi">
+            <span>📷 Rasmni almashtirish</span>
+            <input id="avatar-file-input" type="file" accept="image/*" hidden onchange="handleAvatarUpload(event)">
+          </label>
+          <h4 id="userName">Jahongir</h4>
+          <p id="userPhone">+998 95 767 09 24</p>
+          <span class="jc-member-tag">✦ ZENVORA mijozi</span>
+        </div>
+        <div class="jc-profile-grid">
+          <button class="jc-menu-btn" onclick="showSubView('orders-view')"><span>📦</span>Buyurtmalarim</button>
+          <button class="jc-menu-btn" onclick="showSubView('personal-view')"><span>👤</span>Shaxsiy ma’lumotlar</button>
+          <button class="jc-menu-btn" onclick="showSubView('addresses-view')"><span>📍</span>Manzillarim</button>
+          <button class="jc-menu-btn" onclick="showSubView('payments-view')"><span>💳</span>To‘lov usuli</button>
+          <button class="jc-menu-btn" onclick="showSubView('favorites-view')"><span>♡</span>Sevimlilar</button>
+          <button class="jc-menu-btn" onclick="showSubView('bonuses-view')"><span>🎁</span>Kupon va bonuslar</button>
+          <button class="jc-menu-btn" onclick="showSubView('notifications-view')"><span>🔔</span>Bildirishnomalar</button>
+          <button class="jc-menu-btn" onclick="showSubView('reviews-view')"><span>⭐</span>Sharhlarim</button>
+          <button class="jc-menu-btn" onclick="showSubView('referrals-view')"><span>🤝</span>Do‘st taklif qilish</button>
+          <button class="jc-menu-btn" onclick="toggleDarkMode()"><span>🌙</span>Tungi rejim</button>
+          <button class="jc-menu-btn" onclick="logoutCustomer()" style="grid-column:1/-1;color:#dc2626;border-color:#fecaca;"><span>↪️</span>Profildan chiqish</button>
+        </div>
+      </div>
+
+      <div id="orders-view" class="jc-modal-content sub-view" style="display:none;">
+        <button class="back-sub-btn" onclick="showSubView('main-profile-view')">← Orqaga</button>
+        <h3>Buyurtmalar tarixi</h3>
+        <div id="myOrdersList" class="jc-profile-list"><p>Buyurtmalar yuklanmoqda...</p></div>
+      </div>
+
+      <div id="personal-view" class="jc-modal-content sub-view" style="display:none;">
+        <button class="back-sub-btn" onclick="showSubView('main-profile-view')">← Orqaga</button>
+        <h3>Shaxsiy ma’lumotlar</h3>
+        <form id="profile-info-form" onsubmit="saveProfileInfo(event)">
+          <label>Ism va familiya<input class="jc-input" id="profile-name" required placeholder="Ism va familiya"></label>
+          <label>Telefon raqam<input class="jc-input" id="profile-phone" required placeholder="+998..."></label>
+          <label>Email (ixtiyoriy)<input class="jc-input" id="profile-email" type="email" placeholder="email@example.com"></label>
+          <button class="admin-btn" type="submit" style="width:100%;padding:12px;">Ma’lumotlarni saqlash</button>
+        </form>
+      </div>
+
+      <div id="addresses-view" class="jc-modal-content sub-view" style="display:none;">
+        <button class="back-sub-btn" onclick="showSubView('main-profile-view')">← Orqaga</button>
+        <h3>Manzillarim</h3>
+        <form onsubmit="saveProfileAddress(event)">
+          <label>Yangi manzil<input class="jc-input" id="profile-address" required placeholder="Viloyat, shahar/tuman, ko‘cha"></label>
+          <button class="admin-btn" type="submit">Manzilni saqlash</button>
+        </form>
+        <div id="profile-address-list" class="jc-profile-list"></div>
+      </div>
+
+      <div id="payments-view" class="jc-modal-content sub-view" style="display:none;">
+        <button class="back-sub-btn" onclick="showSubView('main-profile-view')">← Orqaga</button>
+        <h3>Afzal ko‘rilgan to‘lov usuli</h3>
+        <form onsubmit="savePaymentPreference(event)">
+          <label class="jc-option"><input type="radio" name="profile-payment" value="Yetkazib berilganda naqd"> Yetkazib berilganda naqd</label>
+          <label class="jc-option"><input type="radio" name="profile-payment" value="Click / Payme (kelishiladi)"> Click / Payme (kelishiladi)</label>
+          <p class="jc-help">Bu faqat tanlovni saqlaydi; haqiqiy onlayn to‘lov integratsiyasi emas.</p>
+          <button class="admin-btn" type="submit">Tanlovni saqlash</button>
+        </form>
+        <p id="payment-pref-status" class="jc-help"></p>
+      </div>
+
+      <div id="favorites-view" class="jc-modal-content sub-view" style="display:none;">
+        <button class="back-sub-btn" onclick="showSubView('main-profile-view')">← Orqaga</button>
+        <h3>Sevimli mahsulotlar</h3>
+        <div id="profile-favorites-list" class="jc-profile-list"></div>
+      </div>
+
+      <div id="bonuses-view" class="jc-modal-content sub-view" style="display:none;">
+        <button class="back-sub-btn" onclick="showSubView('main-profile-view')">← Orqaga</button>
+        <h3>Kupon va bonuslar</h3>
+        <div class="jc-card"><b>🎁 Xush kelibsiz!</b><p>Hozircha faol kupon yo‘q. Yangi aksiyalar shu yerda ko‘rinadi.</p></div>
+        <label>Promo-kod<input class="jc-input" id="profile-coupon" placeholder="PROMO-KOD"></label>
+        <button class="admin-btn" onclick="applyProfileCoupon()">Kodni tekshirish</button>
+      </div>
+
+      <div id="notifications-view" class="jc-modal-content sub-view" style="display:none;">
+        <button class="back-sub-btn" onclick="showSubView('main-profile-view')">← Orqaga</button>
+        <h3>Bildirishnomalar</h3>
+        <div class="jc-card">🔔 Buyurtma holati va yangi takliflar haqidagi xabarlar shu bo‘limda ko‘rsatiladi.</div>
+      </div>
+
+      <div id="reviews-view" class="jc-modal-content sub-view" style="display:none;">
+        <button class="back-sub-btn" onclick="showSubView('main-profile-view')">← Orqaga</button>
+        <h3>Sharhlarim</h3>
+        <div class="jc-card">⭐ Hozircha yozilgan sharhlaringiz yo‘q.</div>
+      </div>
+
+      <div id="referrals-view" class="jc-modal-content sub-view" style="display:none;">
+        <button class="back-sub-btn" onclick="showSubView('main-profile-view')">← Orqaga</button>
+        <h3>Do‘st taklif qilish</h3>
+        <div class="jc-card"><p>Do‘stlaringizga do‘kon havolasini ulashing.</p><input class="jc-input" id="referral-link" readonly><button class="admin-btn" onclick="copyReferralLink()">Havolani nusxalash</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS MANTIQLAR -->
+  <script>
+    function getStoredProducts() {
+      let stored = localStorage.getItem('jc_products');
+      if (stored) {
+        try { return JSON.parse(stored); } catch(e){}
+      }
+      let initialProducts = [
+        { id: 1, title: 'Nova X Pro smartfon', category: 'Telefonlar', price: 3899000, stock: 14, image: 'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?auto=format&fit=crop&w=600&q=80', description: 'Oltin rangli korpus va professional kamera.' },
+        { id: 2, title: 'AirBook Slim 14', category: 'Noutbuklar', price: 7499000, stock: 8, image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80', description: 'Yengil va ultra yupqa dizayn.' },
+        { id: 3, title: 'Studio simsiz quloqchin', category: 'Aksessuarlar', price: 459000, stock: 3, image: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&w=600&q=80', description: 'Shovqinni bosuvchi zamonaviy naushnik.' },
+        { id: 4, title: 'Minimal smart soat', category: 'Aksessuarlar', price: 699000, stock: 10, image: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=600&q=80', description: 'Salomatlik va sport ko\'rsatkichlarini kuzatish.' }
+      ];
+      localStorage.setItem('jc_products', JSON.stringify(initialProducts));
+      return initialProducts;
+    }
+
+    let allProducts = getStoredProducts();
+    allProducts = allProducts.map(p => ({ ...p, images: Array.isArray(p.images) ? p.images : [], salesLog: Array.isArray(p.salesLog) ? p.salesLog : [], weeklySold: Number(p.weeklySold) || 0 }));
+    let selectedCat = 'all';
+    let searchTerm = '';
+
+    function normalizeSearch(value) {
+      return String(value || '').toLocaleLowerCase('uz-UZ').trim()
+        .replace(/[ʻʼ‘’`]/g, "'").replace(/\s+/g, ' ');
+    }
+
+    // Category words also match all products in that category, even if the exact model isn't typed.
+    const searchCategoryAliases = {
+      'telefonlar': ['telefon', 'telefonlar', 'smartfon', 'smartfonlar', 'mobile', 'mobil'],
+      'noutbuklar': ['noutbuk', 'noutbuklar', 'laptop', 'kompyuter', 'kompyuterlar'],
+      'aksessuarlar': ['aksessuar', 'aksessuarlar', 'quloqchin', 'naushnik', 'soat', 'smart soat', 'zaryadnik', 'chexol']
+    };
+
+    function matchesSearchProduct(product, query) {
+      if (!query) return true;
+      const category = normalizeSearch(product.category || product.cat);
+      const title = normalizeSearch(product.title || product.name);
+      const description = normalizeSearch(product.description || product.desc);
+      const brand = normalizeSearch(product.brand);
+      if ([title, category, description, brand].some(text => text.includes(query))) return true;
+      for (const [cat, aliases] of Object.entries(searchCategoryAliases)) {
+        if (aliases.some(alias => normalizeSearch(alias) === query) && category.includes(cat)) return true;
+      }
+      return false;
+    }
+
+    function renderProducts() {
+      let grid = document.getElementById('product-grid');
+      if(!grid) return;
+      
+      let filtered = selectedCat === 'all' ? allProducts : allProducts.filter(p => (p.category || p.cat) === selectedCat);
+      if (searchTerm) filtered = filtered.filter(p => matchesSearchProduct(p, searchTerm));
+      document.getElementById('result-count').innerText = filtered.length + " ta mahsulot topildi";
+
+      let html = '';
+      filtered.forEach(p => {
+        let img = p.image || p.img;
+        let title = p.title || p.name;
+        html += `
+          <article class="product-card" style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:18px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <img src="${img}" alt="${title}" onclick="showProductDetail(${p.id})" style="width:100%; height:160px; object-fit:cover; border-radius:12px; margin-bottom:12px;cursor:pointer;">
+              <span style="font-size:12px; color:var(--text-muted); font-weight:700;">${p.category || p.cat}</span>
+              <h3 onclick="showProductDetail(${p.id})" style="font-size:16px; font-weight:800; margin:4px 0 8px 0;cursor:pointer;">${title}</h3>
+              <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">${p.description || p.desc || ''}</p>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+              <strong style="color:#7c3aed; font-size:16px;">${p.price.toLocaleString()} so'm</strong>
+              <div style="display:flex;gap:6px;align-items:center;">
+                <button type="button" onclick="toggleFavorite(${p.id})" aria-label="Sevimlilarga qo‘shish" title="Sevimlilarga qo‘shish" style="background:transparent;border:1px solid var(--border-color);padding:7px 10px;border-radius:10px;font-size:18px;cursor:pointer;color:#ef4444;">${isFavorite(p.id) ? '♥' : '♡'}</button>
+                <button onclick="addToCart(${p.id})" style="background:#7c3aed; color:#fff; border:none; padding:8px 14px; border-radius:10px; font-weight:700; cursor:pointer;">Savatga</button>
+              </div>
+            </div>
+          </article>
+        `;
+      });
+      grid.innerHTML = html || '<p style="grid-column:1/-1; text-align:center; padding:30px; opacity:0.6;">Mahsulotlar topilmadi</p>';
+    }
+
+    function showProductDetail(id) {
+      const p = allProducts.find(item => String(item.id) === String(id));
+      if (!p) return;
+      const modal = document.getElementById('product-detail-modal');
+      document.getElementById('detail-title').textContent = p.title || p.name || 'Mahsulot';
+      const imgs = [p.image || p.img, ...(Array.isArray(p.images) ? p.images : [])].filter(Boolean).slice(0,4);
+      while (imgs.length < 3) imgs.push(imgs[0] || '');
+      document.getElementById('detail-gallery').innerHTML = imgs.map((src,i) => src ? `<img src="${escapeProfileText(src)}" alt="${escapeProfileText((p.title||p.name||'Mahsulot')+' rasmi '+(i+1))}" style="width:100%;height:170px;object-fit:contain;background:#fff;border:1px solid var(--border-color);border-radius:12px;padding:6px;">` : '').join('');
+      const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+      const salesLog = Array.isArray(p.salesLog) ? p.salesLog : [];
+      const weekly = salesLog.filter(entry => Number(entry.at) >= cutoff).reduce((sum, entry) => sum + (Number(entry.qty) || 0), 0);
+      const stock = Number(p.stock) || 0;
+      document.getElementById('detail-info').innerHTML = `<p style="margin:8px 0;color:var(--text-muted)">${escapeProfileText(p.category || p.cat || 'Mahsulot')}</p><p style="line-height:1.6">${escapeProfileText(p.description || p.desc || 'Tavsif kiritilmagan.')}</p><div style="display:flex;flex-wrap:wrap;gap:12px;margin:14px 0"><div class="jc-card"><small>💰 Narxi</small><h3>${(Number(p.price)||0).toLocaleString('uz-UZ')} so‘m</h3></div><div class="jc-card"><small>📦 Qoldiq</small><h3>${stock} ta</h3></div><div class="jc-card"><small>📈 Shu haftada sotilgan</small><h3>${weekly} ta</h3></div></div><button class="primary-btn" onclick="addToCart(${p.id});closeProductDetail()">🛒 Savatga qo‘shish</button>`;
+      modal.classList.add('active');
+    }
+    function closeProductDetail() { const m=document.getElementById('product-detail-modal'); if(m) m.classList.remove('active'); }
+
+    // Sevimlilar: ro‘yxat brauzerda saqlanadi, sahifa yangilanganda ham qoladi.
+    function getFavorites() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('jc_favorites') || '[]');
+        return Array.isArray(saved) ? saved : [];
+      } catch (e) { return []; }
+    }
+
+    function isFavorite(id) {
+      return getFavorites().some(favId => String(favId) === String(id));
+    }
+
+    function toggleFavorite(id) {
+      const favorites = getFavorites();
+      const index = favorites.findIndex(favId => String(favId) === String(id));
+      if (index >= 0) {
+        favorites.splice(index, 1);
+        showToastSafe('Sevimlilardan olib tashlandi');
+      } else {
+        favorites.push(id);
+        showToastSafe('Sevimlilarga qo‘shildi');
+      }
+      localStorage.setItem('jc_favorites', JSON.stringify(favorites));
+      renderProducts();
+      renderProfileFavorites();
+    }
+
+    function showToastSafe(message) {
+      if (typeof showToast === 'function') showToast(message);
+      else if (typeof showToastMessage === 'function') showToastMessage(message);
+    }
+
+    function openFavorites() {
+      const modal = document.getElementById('profileModal');
+      if (modal) {
+        openProfileModal();
+        showSubView('favorites-view');
+      } else {
+        alert('Sevimlilar oynasi topilmadi. Sahifani yangilang.');
+      }
+    }
+
+    function filterCat(cat, btn) {
+      selectedCat = cat;
+      document.querySelectorAll('.nav-category, .pill').forEach(b => b.classList.remove('active'));
+      if(btn) btn.classList.add('active');
+      renderProducts();
+    }
+
+    // Savat Funksiyalari
+    function addToCart(id) {
+      let cart;
+      try { cart = JSON.parse(localStorage.getItem('cart') || '[]'); } catch (e) { cart = []; }
+      if (!Array.isArray(cart)) cart = [];
+      const p = allProducts.find(item => String(item.id) === String(id));
+      if (!p) { alert('Mahsulot topilmadi. Sahifani yangilang.'); return; }
+      const exist = cart.find(item => String(item.id) === String(id));
+      const stock = Number(p.stock);
+      if (Number.isFinite(stock) && stock >= 0 && stock > 0 && exist && Number(exist.qty) >= stock) { alert('Kechirasiz, omborda bundan ortiq mahsulot yo‘q.'); return; }
+      if (Number.isFinite(stock) && stock === 0) { alert('Bu mahsulot hozir omborda qolmagan.'); return; }
+      if (exist) {
+        exist.qty = Math.max(0, Number(exist.qty) || 0) + 1;
+      } else {
+        cart.push({ id: p.id, title: p.title || p.name || 'Mahsulot', price: Number(p.price) || 0, image: p.image || p.img || '', qty: 1 });
+      }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartUI();
+      openCartDrawer();
+    }
+
+    function updateCartUI() {
+      let cart;
+      try { cart = JSON.parse(localStorage.getItem('cart') || '[]'); } catch (e) { cart = []; }
+      if (!Array.isArray(cart)) cart = [];
+      cart = cart.filter(item => item && Number(item.qty) > 0);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      let total = 0, count = 0;
+      const html = cart.map((item, idx) => {
+        const price = Number(item.price) || 0;
+        const qty = Math.max(1, Number(item.qty) || 1);
+        total += price * qty;
+        count += qty;
+        return `
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;border-bottom:1px solid var(--border-color);padding-bottom:12px;">
+            <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+              <img src="${item.image || ''}" alt="" style="width:52px;height:52px;flex-shrink:0;border-radius:8px;object-fit:cover;">
+              <div style="min-width:0;"><b>${escapeProfileText(item.title || 'Mahsulot')}</b><br><small style="color:#7c3aed;font-weight:700;">${price.toLocaleString()} so‘m</small></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+              <button type="button" onclick="changeQty(${idx}, -1)" aria-label="Kamaytirish" style="padding:4px 10px;border-radius:6px;border:1px solid var(--border-color);font-weight:bold;cursor:pointer;">−</button>
+              <b>${qty}</b>
+              <button type="button" onclick="changeQty(${idx}, 1)" aria-label="Ko‘paytirish" style="padding:4px 10px;border-radius:6px;border:1px solid var(--border-color);font-weight:bold;cursor:pointer;">+</button>
+            </div>
+          </div>`;
+      }).join('');
+      const countEl = document.getElementById('cart-count');
+      const drawerCount = document.getElementById('drawer-count');
+      const itemsEl = document.getElementById('cart-items');
+      const totalEl = document.getElementById('cart-total');
+      const checkoutTotal = document.getElementById('checkout-total');
+      if (countEl) countEl.innerText = count;
+      if (drawerCount) drawerCount.innerText = `(${count})`;
+      if (itemsEl) itemsEl.innerHTML = html || '<p style="text-align:center;padding:30px;opacity:.6;">Savat hozircha bo‘sh</p>';
+      if (totalEl) totalEl.innerText = total.toLocaleString() + ' so‘m';
+      if (checkoutTotal) checkoutTotal.innerText = total.toLocaleString() + ' so‘m';
+    }
+
+    function changeQty(index, delta) {
+      let cart;
+      try { cart = JSON.parse(localStorage.getItem('cart') || '[]'); } catch (e) { cart = []; }
+      if (!Array.isArray(cart)) cart = [];
+      if (cart[index]) {
+        cart[index].qty = (Number(cart[index].qty) || 0) + Number(delta);
+        if (cart[index].qty <= 0) cart.splice(index, 1);
+      }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartUI();
+    }
+
+    function openCartDrawer() {
+      const drawer = document.getElementById('cart-drawer');
+      const overlay = document.getElementById('overlay');
+      if (drawer) drawer.classList.add('active');
+      if (overlay) overlay.classList.add('active');
+      updateCartUI();
+    }
+
+    function closeAllDrawers() {
+      document.querySelectorAll('.drawer, .modal, .overlay').forEach(el => el.classList.remove('active'));
+    }
+
+    function openCheckoutModal() {
+      let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      if(cart.length === 0) { alert("Savatingiz bo'sh!"); return; }
+      closeAllDrawers();
+      document.getElementById('checkout-modal').classList.add('active');
+    }
+
+    function handleCheckoutSubmit(e) {
+      e.preventDefault();
+      let name = document.getElementById('co_name').value;
+      let phone = document.getElementById('co_phone').value;
+      let address = document.getElementById('co_address').value;
+      let totalStr = document.getElementById('checkout-total').innerText;
+
+      let orders = JSON.parse(localStorage.getItem('my_orders') || '[]');
+      let purchasedCart = [];
+      try { purchasedCart = JSON.parse(localStorage.getItem('cart') || '[]'); } catch (_) { purchasedCart = []; }
+      purchasedCart.forEach(ci => {
+        const product = allProducts.find(pp => String(pp.id) === String(ci.id));
+        if (product) {
+          product.stock = Math.max(0, (Number(product.stock) || 0) - (Number(ci.qty) || 1));
+          const soldQty = Number(ci.qty) || 1;
+          product.weeklySold = (Number(product.weeklySold) || 0) + soldQty;
+          if (!Array.isArray(product.salesLog)) product.salesLog = [];
+          product.salesLog.push({ at: Date.now(), qty: soldQty });
+        }
+      });
+      localStorage.setItem('jc_products', JSON.stringify(allProducts));
+      // Buyurtma bilan birga aynan xarid qilingan mahsulotlarning ma'lumotlarini saqlash
+      const orderItems = purchasedCart.map(ci => {
+        const product = allProducts.find(pp => String(pp.id) === String(ci.id)) || {};
+        return {
+          id: ci.id,
+          name: ci.title || ci.name || product.title || product.name || 'Mahsulot',
+          color: ci.color || ci.selectedColor || ci.variant || product.color || product.selectedColor || product.variant || 'Ko‘rsatilmagan',
+          image: ci.image || ci.img || product.image || product.img || (Array.isArray(product.images) ? product.images[0] : '') || '',
+          price: Number(ci.price ?? product.price) || 0,
+          qty: Math.max(1, Number(ci.qty ?? ci.quantity) || 1)
+        };
+      });
+      orders.unshift({
+        id: Math.floor(100000 + Math.random() * 900000),
+        customer: name,
+        phone: phone,
+        address: address,
+        price: totalStr,
+        items: orderItems,
+        status: 'Jarayonda'
+      });
+      localStorage.setItem('my_orders', JSON.stringify(orders));
+
+      // SAVATNI TOZALASH
+      localStorage.removeItem('cart');
+      updateCartUI();
+      closeAllDrawers();
+      alert("Buyurtmangiz muvaffaqiyatli qabul qilindi!");
+    }
+
+    // Admin Auth va Mantiq
+    function openAdminAuthModal() { document.getElementById('admin-auth-modal').style.display = 'flex'; }
+    function handleAdminAuth(e) {
+      e.preventDefault();
+      const email = document.getElementById('admin_email_in').value.trim().toLowerCase();
+      const pass = document.getElementById('admin_pass_in').value;
+      if(email === 'jahongir777@gmail.com' && pass === 'jahongir778') {
+        document.getElementById('admin-auth-modal').style.display = 'none';
+        localStorage.setItem('jc_session', JSON.stringify({role:'admin',name:'Jahongir',email}));
+        document.getElementById('jc-auth-gate').classList.remove('active');
+        document.getElementById('admin-full-modal').style.display = 'flex';
+        loadAdminData();
+      } else {
+        alert("Admin email yoki parol noto'g'ri!");
+      }
+    }
+
+    function closeAdminPanel() { document.getElementById('admin-full-modal').style.display = 'none'; }
+
+    function switchAdminTab(tabId, btn) {
+      document.querySelectorAll('.admin-tab-pane').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.admin-sidebar button').forEach(el => el.classList.remove('active'));
+      document.getElementById('admin-tab-' + tabId).classList.add('active');
+      btn.classList.add('active');
+      document.getElementById('admin-page-title').innerText = btn.innerText.replace(/^[^\w\s]+/, '').trim();
+    }
+
+    function loadAdminData() {
+      let orders = JSON.parse(localStorage.getItem('my_orders') || '[]');
+      let totalSum = orders.reduce((acc, o) => (o.status !== 'Bekor qilindi' ? acc + (parseInt(String(o.price).replace(/\D/g,'')) || 0) : acc), 0);
+      const resetBase = Number(localStorage.getItem('jc_sales_reset_base') || 0);
+      totalSum = Math.max(0, totalSum - resetBase);
+      
+      document.getElementById('stat-total-orders').innerText = orders.length + ' ta';
+      document.getElementById('stat-total-sales').innerText = totalSum.toLocaleString() + ' so\'m';
+
+      let ordHtml = '';
+      orders.forEach((o, index) => {
+        let badgeBg = '#f59e0b';
+        if(o.status === 'Yetkazildi') badgeBg = '#10b981';
+        if(o.status === 'Bekor qilindi') badgeBg = '#ef4444';
+
+        ordHtml += `
+          <tr>
+            <td>#${o.id}</td>
+            <td>${o.customer} (${o.phone})</td>
+            <td>${escapeProfileText(o.address || '')}</td>
+            <td style="min-width:240px;">${(Array.isArray(o.items) && o.items.length) ? o.items.map(it => `
+              <div style="display:flex;align-items:center;gap:9px;margin:5px 0;padding:6px;border:1px solid var(--border-color);border-radius:8px;">
+                ${it.image ? `<img src="${it.image}" alt="${escapeProfileText(it.name || 'Mahsulot')}" style="width:46px;height:46px;object-fit:contain;border-radius:6px;background:#fff;flex-shrink:0;">` : '<div style="width:46px;height:46px;display:grid;place-items:center;background:#f1f5f9;border-radius:6px;">📦</div>'}
+                <div style="min-width:0;"><b>${escapeProfileText(it.name || 'Mahsulot')}</b><br><small>Rangi: ${escapeProfileText(it.color || 'Ko‘rsatilmagan')}</small><br><small>${(Number(it.price)||0).toLocaleString()} so‘m × ${Math.max(1,Number(it.qty)||1)} dona</small></div>
+              </div>`).join('') : '<small>Bu eski buyurtmada mahsulot tafsilotlari saqlanmagan</small>'}</td>
+            <td>${o.price}</td>
+            <td><span style="background:${badgeBg}; color:#fff; padding:3px 8px; border-radius:10px; font-size:11px;">${o.status}</span></td>
+            <td>
+              <select onchange="updateOrderStatus(${index}, this.value)" style="padding:4px; border-radius:6px;">
+                <option ${o.status === 'Jarayonda' ? 'selected':''}>Jarayonda</option>
+                <option ${o.status === 'Yetkazilmoqda' ? 'selected':''}>Yetkazilmoqda</option>
+                <option ${o.status === 'Yetkazildi' ? 'selected':''}>Yetkazildi</option>
+                <option ${o.status === 'Bekor qilindi' ? 'selected':''}>Bekor qilindi</option>
+              </select>
+            </td>
+          </tr>
+        `;
+      });
+      document.getElementById('admin-orders-list').innerHTML = ordHtml || '<tr><td colspan="7" style="text-align:center; opacity:0.6;">Buyurtmalar yo\'q</td></tr>';
+
+      let pHtml = '';
+      let invHtml = '';
+      allProducts.forEach((p, idx) => {
+        pHtml += `
+          <tr>
+            <td><img src="${p.image || p.img}" style="width:36px; height:36px; border-radius:6px; object-fit:cover;"></td>
+            <td><b>${p.title || p.name}</b></td>
+            <td>${p.category || p.cat}</td>
+            <td>${p.price.toLocaleString()} so'm</td>
+            <td>${p.stock || 10} ta</td>
+            <td><button onclick="deleteProduct(${idx})" style="color:red; background:none; border:none; cursor:pointer; font-weight:700;">O'chirish</button></td>
+          </tr>
+        `;
+        invHtml += `<tr><td>${p.title || p.name}</td><td>${p.stock || 10} ta</td></tr>`;
+      });
+      document.getElementById('admin-products-list').innerHTML = pHtml;
+      document.getElementById('admin-inventory-list').innerHTML = invHtml;
+      document.getElementById('stat-total-items').innerText = allProducts.length + ' turdagi';
+    }
+
+    function resetDisplayedProfit() {
+      if (!confirm('Jami savdo ko‘rsatkichini 0 ga tushirmoqchimisiz? Buyurtmalar tarixi o‘chirilmaydi.')) return;
+      const orders = JSON.parse(localStorage.getItem('my_orders') || '[]');
+      const total = orders.reduce((acc,o) => o.status !== 'Bekor qilindi' ? acc + (parseInt(String(o.price).replace(/\D/g,'')) || 0) : acc, 0);
+      localStorage.setItem('jc_sales_reset_base', String(total));
+      loadAdminData();
+    }
+
+    function saveNewProduct(e) {
+      e.preventDefault();
+      let newP = {
+        id: Date.now(),
+        title: document.getElementById('np_name').value,
+        category: document.getElementById('np_cat').value,
+        price: parseInt(document.getElementById('np_price').value),
+        stock: parseInt(document.getElementById('np_stock').value),
+        image: document.getElementById('np_img').value,
+        images: ['np_img2','np_img3','np_img4'].map(id => (document.getElementById(id)?.value || '').trim()).filter(Boolean),
+        description: document.getElementById('np_desc').value,
+        weeklySold: 0
+      };
+      allProducts.push(newP);
+      localStorage.setItem('jc_products', JSON.stringify(allProducts));
+      document.getElementById('add-product-modal').style.display = 'none';
+      const form = document.querySelector('#add-product-modal form'); if (form) form.reset();
+      
+      renderProducts();
+      loadAdminData();
+      alert("Yangi mahsulot barqaror qo'shildi va saytda paydo bo'ldi!");
+    }
+
+    function deleteProduct(idx) {
+      if(confirm("Mahsulotni o'chirmoqchimisiz?")) {
+        allProducts.splice(idx, 1);
+        localStorage.setItem('jc_products', JSON.stringify(allProducts));
+        renderProducts();
+        loadAdminData();
+      }
+    }
+
+    function updateOrderStatus(index, newStatus) {
+      let orders = JSON.parse(localStorage.getItem('my_orders') || '[]');
+      if(!orders[index]) return;
+      if(newStatus === 'Yetkazildi') {
+        const delivered = JSON.parse(localStorage.getItem('jc_delivered_orders') || '[]');
+        const order = {...orders[index], status:'Yetkazildi', deliveredAt:new Date().toISOString()};
+        delivered.unshift(order);
+        localStorage.setItem('jc_delivered_orders', JSON.stringify(delivered));
+        orders.splice(index, 1);
+      } else {
+        orders[index].status = newStatus;
+      }
+      localStorage.setItem('my_orders', JSON.stringify(orders));
+      loadAdminData();
+    }
+
+    // Ro‘yxatdan o‘tish va kirish (front-end demo; server autentifikatsiyasi emas)
+    function switchAuthMode(mode) {
+      const reg = mode === 'register';
+      document.getElementById('jc-register-form').style.display = reg ? 'block' : 'none';
+      document.getElementById('jc-login-form').style.display = reg ? 'none' : 'block';
+      document.getElementById('jc-tab-register').classList.toggle('active', reg);
+      document.getElementById('jc-tab-login').classList.toggle('active', !reg);
+      document.getElementById('jc-auth-title').innerText = reg ? 'Xaridni boshlaymizmi?' : 'Qaytganingizdan xursandmiz';
+    }
+    function handleCustomerRegister(e) {
+      e.preventDefault();
+      const user = {
+        name: document.getElementById('jc-reg-name').value.trim(),
+        email: document.getElementById('jc-reg-email').value.trim().toLowerCase(),
+        password: document.getElementById('jc-reg-password').value,
+        phone: document.getElementById('jc-reg-phone').value.trim(),
+        dob: document.getElementById('jc-reg-dob').value,
+        createdAt: new Date().toISOString()
+      };
+      if(user.password.length < 6) { alert('Parol kamida 6 ta belgidan iborat bo‘lsin.'); return; }
+      if(user.email === 'jahongir777@gmail.com' && user.password === 'jahongir778') {
+        user.name = 'Jahongir';
+        localStorage.setItem('jc_session', JSON.stringify({role:'admin',name:'Jahongir',email:user.email,phone:user.phone,dob:user.dob}));
+        finishAuth({role:'admin',name:'Jahongir',email:user.email,phone:user.phone,dob:user.dob});
+        openAdminAuthModal();
+        document.getElementById('admin_email_in').value = 'jahongir777@gmail.com';
+        document.getElementById('admin_pass_in').value = 'jahongir778';
+        return;
+      }
+      const users = JSON.parse(localStorage.getItem('jc_customers') || '{}');
+      if(users[user.email]) { alert('Bu email bilan hisob mavjud. “Kirish” bo‘limidan foydalaning.'); switchAuthMode('login'); document.getElementById('jc-login-email').value = user.email; return; }
+      users[user.email] = user;
+      localStorage.setItem('jc_customers', JSON.stringify(users));
+      localStorage.setItem('jc_session', JSON.stringify({role:'customer',name:user.name,email:user.email,phone:user.phone,dob:user.dob}));
+      finishAuth(user);
+    }
+    function handleCustomerLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('jc-login-email').value.trim().toLowerCase();
+      const password = document.getElementById('jc-login-password').value;
+      if(email === 'jahongir777@gmail.com' && password === 'jahongir778') {
+        const admin = {role:'admin',name:'Jahongir',email};
+        localStorage.setItem('jc_session', JSON.stringify(admin));
+        finishAuth(admin);
+        document.getElementById('admin-full-modal').style.display = 'flex';
+        loadAdminData();
+        return;
+      }
+      const users = JSON.parse(localStorage.getItem('jc_customers') || '{}');
+      if(!users[email] || users[email].password !== password) { alert('Email yoki parol noto‘g‘ri.'); return; }
+      const user = users[email];
+      localStorage.setItem('jc_session', JSON.stringify({role:'customer',name:user.name,email:user.email,phone:user.phone,dob:user.dob}));
+      finishAuth(user);
+    }
+    function finishAuth(user) {
+      const gate = document.getElementById('jc-auth-gate');
+      if(gate) gate.classList.remove('active');
+      const name = user.name || 'Mijoz';
+      const phone = user.phone || '';
+      const nameEl = document.getElementById('userName'); if(nameEl) nameEl.textContent = name;
+      const phoneEl = document.getElementById('userPhone'); if(phoneEl) phoneEl.textContent = phone;
+      const info = {name,phone,email:user.email || '',dob:user.dob || ''};
+      localStorage.setItem('jc_profile_info', JSON.stringify(info));
+      const adminButton = document.querySelector('button[onclick="openAdminAuthModal()"]');
+      if(adminButton) adminButton.style.display = user.role === 'admin' ? '' : 'none';
+    }
+    function handleAvatarUpload(event) {
+      const file = event && event.target && event.target.files && event.target.files[0];
+      if(!file) return;
+      if(!file.type.startsWith('image/')) { alert('Iltimos, rasm faylini tanlang.'); event.target.value=''; return; }
+      if(file.size > 2 * 1024 * 1024) { alert('Rasm hajmi 2 MB dan kichik bo‘lsin.'); event.target.value=''; return; }
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        const data = ev.target.result;
+        const avatar = document.getElementById('userAvatar');
+        if(avatar) avatar.src = data;
+        localStorage.setItem('jc_avatar', data);
+        alert('Profil rasmi saqlandi.');
+      };
+      reader.onerror = function(){ alert('Rasmni o‘qib bo‘lmadi. Boshqa rasm tanlang.'); };
+      reader.readAsDataURL(file);
+    }
+
+    // Profil va Tungi rejim
+    function openProfileModal() {
+      showSubView('main-profile-view');
+      document.getElementById('profileModal').style.display = 'flex';
+    }
+    function closeProfileModal() { document.getElementById('profileModal').style.display = 'none'; }
+
+    // Profildan chiqish: savat, sevimlilar va buyurtmalarni o‘chirmaydi.
+    function logoutCustomer() {
+      const session = JSON.parse(localStorage.getItem('jc_session') || 'null');
+      if (!session) {
+        closeProfileModal();
+        const gate = document.getElementById('jc-auth-gate');
+        if (gate) { gate.classList.add('active'); switchAuthMode('login'); }
+        return;
+      }
+      if (!confirm('Hisobingizdan chiqmoqchimisiz?')) return;
+      localStorage.removeItem('jc_session');
+      closeProfileModal();
+      const gate = document.getElementById('jc-auth-gate');
+      if (gate) { gate.classList.add('active'); switchAuthMode('login'); }
+      const adminButton = document.querySelector('button[onclick="openAdminAuthModal()"]');
+      if (adminButton) adminButton.style.display = 'none';
+      const adminModal = document.getElementById('admin-full-modal');
+      if (adminModal) adminModal.style.display = 'none';
+      const adminAuth = document.getElementById('admin-auth-modal');
+      if (adminAuth) adminAuth.style.display = 'none';
+      alert('Hisobdan muvaffaqiyatli chiqdingiz.');
+    }
+    
+    function showSubView(id) {
+      document.querySelectorAll('#profileModal .sub-view').forEach(el => el.style.display = 'none');
+      const view = document.getElementById(id);
+      if (view) view.style.display = 'block';
+
+      if (id === 'orders-view') {
+        let orders = JSON.parse(localStorage.getItem('my_orders') || '[]');
+        let html = '';
+        orders.forEach(o => {
+          let col = '#f59e0b';
+          if (o.status === 'Yetkazildi') col = '#10b981';
+          if (o.status === 'Bekor qilindi') col = '#ef4444';
+          html += `<div class="jc-card" style="display:flex;justify-content:space-between;align-items:center;gap:10px;"><div><b>#${o.id}</b><br><small>${o.price}</small></div><span style="background:${col};color:#fff;padding:3px 8px;border-radius:10px;font-size:11px;">${o.status}</span></div>`;
+        });
+        document.getElementById('myOrdersList').innerHTML = html || '<p style="text-align:center;">Buyurtmalar yo‘q</p>';
+      }
+      if (id === 'personal-view') {
+        const info = JSON.parse(localStorage.getItem('jc_profile_info') || '{}');
+        document.getElementById('profile-name').value = info.name || document.getElementById('userName').innerText;
+        document.getElementById('profile-phone').value = info.phone || document.getElementById('userPhone').innerText;
+        document.getElementById('profile-email').value = info.email || '';
+      }
+      if (id === 'addresses-view') renderProfileAddresses();
+      if (id === 'favorites-view') renderProfileFavorites();
+      if (id === 'payments-view') {
+        const saved = localStorage.getItem('jc_payment_preference') || '';
+        document.querySelectorAll('input[name="profile-payment"]').forEach(r => r.checked = r.value === saved);
+        document.getElementById('payment-pref-status').innerText = saved ? 'Saqlangan tanlov: ' + saved : '';
+      }
+      if (id === 'referrals-view') document.getElementById('referral-link').value = location.href.split('#')[0] + '?ref=jahongir';
+    }
+
+    function saveProfileInfo(e) {
+      e.preventDefault();
+      const info = {
+        name: document.getElementById('profile-name').value.trim(),
+        phone: document.getElementById('profile-phone').value.trim(),
+        email: document.getElementById('profile-email').value.trim()
+      };
+      localStorage.setItem('jc_profile_info', JSON.stringify(info));
+      document.getElementById('userName').innerText = info.name;
+      document.getElementById('userPhone').innerText = info.phone;
+      alert('Shaxsiy ma’lumotlar saqlandi.');
+    }
+
+    function saveProfileAddress(e) {
+      e.preventDefault();
+      const field = document.getElementById('profile-address');
+      const address = field.value.trim();
+      if (!address) return;
+      const addresses = JSON.parse(localStorage.getItem('jc_profile_addresses') || '[]');
+      addresses.push(address);
+      localStorage.setItem('jc_profile_addresses', JSON.stringify(addresses));
+      field.value = '';
+      renderProfileAddresses();
+    }
+
+    function renderProfileAddresses() {
+      const list = document.getElementById('profile-address-list');
+      if (!list) return;
+      const addresses = JSON.parse(localStorage.getItem('jc_profile_addresses') || '[]');
+      list.innerHTML = addresses.map((a, i) => `<div class="jc-card" style="display:flex;justify-content:space-between;gap:8px;align-items:center;"><span>📍 ${escapeProfileText(a)}</span><button class="admin-btn" onclick="deleteProfileAddress(${i})">O‘chirish</button></div>`).join('') || '<p>Saqlangan manzil yo‘q.</p>';
+    }
+
+    function deleteProfileAddress(index) {
+      const addresses = JSON.parse(localStorage.getItem('jc_profile_addresses') || '[]');
+      addresses.splice(index, 1);
+      localStorage.setItem('jc_profile_addresses', JSON.stringify(addresses));
+      renderProfileAddresses();
+    }
+
+    function savePaymentPreference(e) {
+      e.preventDefault();
+      const selected = document.querySelector('input[name="profile-payment"]:checked');
+      if (!selected) { alert('Avval to‘lov usulini tanlang.'); return; }
+      localStorage.setItem('jc_payment_preference', selected.value);
+      document.getElementById('payment-pref-status').innerText = 'Saqlandi: ' + selected.value;
+    }
+
+    function renderProfileFavorites() {
+      const list = document.getElementById('profile-favorites-list');
+      if (!list) return;
+      const favorites = JSON.parse(localStorage.getItem('jc_favorites') || '[]');
+      const items = allProducts.filter(p => favorites.includes(p.id));
+      list.innerHTML = items.map(p => `<div class="jc-card" style="display:flex;gap:12px;align-items:center;"><img src="${p.image || p.img || ''}" alt="" style="width:54px;height:54px;object-fit:cover;border-radius:10px;"><div style="flex:1"><b>${escapeProfileText(p.title || p.name || 'Mahsulot')}</b><p>${Number(p.price || 0).toLocaleString()} so‘m</p></div><button class="admin-btn" onclick="addToCart(${p.id})">Savatga</button></div>`).join('') || '<p>Sevimli mahsulotlar ro‘yxati hozircha bo‘sh.</p>';
+    }
+
+    function escapeProfileText(value) {
+      return String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    }
+
+    function applyProfileCoupon() {
+      const code = document.getElementById('profile-coupon').value.trim();
+      alert(code ? 'Bu demo sahifada promo-kodlar tekshiruvi ulanmagan.' : 'Promo-kodni kiriting.');
+    }
+
+    function copyReferralLink() {
+      const field = document.getElementById('referral-link');
+      field.select();
+      field.setSelectionRange(0, 99999);
+      try {
+        const ok = document.execCommand('copy');
+        alert(ok ? 'Havola nusxalandi.' : 'Havolani qo‘lda nusxalang.');
+      } catch (e) { alert('Havolani qo‘lda nusxalang.'); }
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      let isDark = document.body.classList.contains('dark-mode');
+      localStorage.setItem('jc_theme', isDark ? 'dark' : 'light');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedProfile = JSON.parse(localStorage.getItem('jc_profile_info') || '{}');
+      if (savedProfile.name) document.getElementById('userName').innerText = savedProfile.name;
+      if (savedProfile.phone) document.getElementById('userPhone').innerText = savedProfile.phone;
+      const savedAvatar = localStorage.getItem('jc_avatar');
+      if(savedAvatar) document.getElementById('userAvatar').src = savedAvatar;
+      const session = JSON.parse(localStorage.getItem('jc_session') || 'null');
+      const adminButton = document.querySelector('button[onclick="openAdminAuthModal()"]');
+      if(session) {
+        finishAuth(session);
+        if(adminButton) adminButton.style.display = session.role === 'admin' ? '' : 'none';
+      } else {
+        document.getElementById('jc-auth-gate').classList.add('active');
+        if(adminButton) adminButton.style.display = 'none';
+      }
+      if(localStorage.getItem('jc_theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+      }
+      renderProducts();
+      updateCartUI();
+
+      const favoritesBtn = document.getElementById('favorites-btn');
+      if (favoritesBtn) favoritesBtn.addEventListener('click', openFavorites);
+      const cartBtn = document.getElementById('cart-btn');
+      if (cartBtn) cartBtn.onclick = openCartDrawer;
+
+      let searchInput = document.getElementById('search-input');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          searchTerm = normalizeSearch(e.target.value);
+          renderProducts();
+        });
+      }
+
+    });
+  </script>
+</body>
+</html>
